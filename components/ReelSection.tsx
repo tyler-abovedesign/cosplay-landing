@@ -1,0 +1,103 @@
+"use client";
+
+import React, { useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
+
+gsap.registerPlugin(ScrollTrigger);
+
+const ReelSection = () => {
+    const containerRef = useRef<HTMLDivElement>(null);
+    const leftReelRef = useRef<HTMLDivElement>(null);
+    const rightReelRef = useRef<HTMLDivElement>(null);
+
+    useGSAP(
+        () => {
+            const tl = gsap.timeline({
+                scrollTrigger: {
+                    trigger: containerRef.current,
+                    start: "top top",
+                    end: "bottom bottom",
+                    scrub: 1,
+                },
+            });
+
+            // Parallax animation for left reel (slower)
+            tl.to(
+                leftReelRef.current,
+                {
+                    y: "-20%",
+                    ease: "none",
+                },
+                0
+            );
+
+            // Parallax animation for right reel (faster)
+            tl.to(
+                rightReelRef.current,
+                {
+                    y: "-40%",
+                    ease: "none",
+                },
+                0
+            );
+        },
+        { scope: containerRef }
+    );
+
+    return (
+        <section ref={containerRef} className="relative w-full h-[200vh] z-20">
+            <div className="sticky top-0 h-screen w-full overflow-hidden flex items-center justify-center">
+                {/* Left Reel */}
+                <div
+                    ref={leftReelRef}
+                    className="absolute left-[5%] top-[10%] w-[342px] h-[608px] -rotate-6 z-0 opacity-80"
+                >
+                    <div className="relative w-full h-full overflow-hidden rounded-2xl shadow-2xl">
+                        <video
+                            className="w-full h-full object-cover"
+                            autoPlay
+                            muted
+                            loop
+                            playsInline
+                            src="/heroVideo.mp4"
+                        />
+                    </div>
+                </div>
+
+                {/* Right Reel */}
+                <div
+                    ref={rightReelRef}
+                    className="absolute right-[5%] top-[30%] w-[342px] h-[608px] rotate-6 z-0 opacity-80"
+                >
+                    <div className="relative w-full h-full overflow-hidden rounded-2xl shadow-2xl">
+                        <video
+                            className="w-full h-full object-cover"
+                            autoPlay
+                            muted
+                            loop
+                            playsInline
+                            src="/heroVideo.mp4"
+                        />
+                    </div>
+                </div>
+
+                {/* Content Container */}
+                <div className="relative z-10 text-center max-w-2xl px-4">
+                    <div className="w-fit mx-auto px-4 py-1 mb-6 border border-[#9653ED] rounded-full text-[#9653ED] text-[20px] font-medium uppercase tracking-wide">
+                        Community
+                    </div>
+                    <h2 className="text-5xl md:text-7xl font-bold mb-6 font-heading text-black dark:text-white">
+                        Share Your Craft
+                    </h2>
+                    <p className="text-xl text-gray-600 dark:text-gray-300">
+                        Join a community of creators who are passionate about bringing characters to life. Show off your work in a format designed for cosplay.
+                    </p>
+                </div>
+            </div>
+        </section>
+    );
+};
+
+export default ReelSection;

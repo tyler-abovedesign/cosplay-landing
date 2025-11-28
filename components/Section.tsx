@@ -9,54 +9,88 @@ gsap.registerPlugin(ScrollTrigger);
 interface SectionProps {
     headline: string;
     subtext: string;
+    tag?: string;
     imageSrc?: string;
+    mobileImageSrc?: string;
     imageAlt?: string;
     orientation?: 'left' | 'right';
     hideImage?: boolean;
 }
 
-const Section: React.FC<SectionProps> = ({ headline, subtext, imageSrc, imageAlt, orientation = 'left', hideImage = false }) => {
+const Section: React.FC<SectionProps> = ({ headline, subtext, tag, imageSrc, mobileImageSrc, imageAlt, orientation = 'left', hideImage = false }) => {
     const imageRef = useRef<HTMLDivElement>(null);
+    const sectionRef = useRef<HTMLDivElement>(null);
+    const contentRef = useRef<HTMLDivElement>(null);
 
     useGSAP(() => {
-        if (!imageRef.current) return;
+        // Image Animation
+        if (imageRef.current) {
+            const xOffset = orientation === 'left' ? -200 : 200;
 
-        const xOffset = orientation === 'left' ? -200 : 200;
+            gsap.from(imageRef.current, {
+                scrollTrigger: {
+                    trigger: imageRef.current,
+                    start: "top 80%",
+                    toggleActions: "play none none reverse",
+                },
+                opacity: 0,
+                x: xOffset,
+                duration: 1,
+                ease: "power1.out",
+            });
+        }
 
-        gsap.from(imageRef.current, {
-            scrollTrigger: {
-                trigger: imageRef.current,
-                start: "top 80%",
-                toggleActions: "play none none reverse",
-            },
-            opacity: 0,
-            x: xOffset,
-            duration: 1,
-            ease: "power1.out",
-        });
-    }, { scope: imageRef });
+        // Fade out content as section scrolls out
+        if (contentRef.current) {
+            gsap.to(contentRef.current, {
+                scrollTrigger: {
+                    trigger: sectionRef.current,
+                    start: "bottom bottom",
+                    end: "bottom 50%",
+                    scrub: true,
+                },
+                opacity: 0,
+                ease: "none",
+            });
+        }
+    }, { scope: sectionRef });
 
     return (
-        <section className="relative min-h-screen w-full flex flex-col md:block overflow-hidden z-20 ">
+        <section ref={sectionRef} className="relative overflow-visible min-h-screen w-full flex flex-col md:block z-20 ">
             {/* Image Container - Absolute on Desktop, Stacked on Mobile */}
             {!hideImage && (
                 <div
                     ref={imageRef}
                     className={`
-                        w-full h-[50vh] flex items-center justify-center md:absolute md:top-0 md:bottom-0 md:h-full md:w-[50vw] md:max-w-[1100px]
+                        flex items-center justify-center md:absolute md:top-0 md:bottom-0 md:h-full md:w-[50vw]
                         ${orientation === 'left' ? 'md:right-1/2' : 'md:left-1/2'}
                         z-0
                     `}
                 >
-                    <div className="relative w-full h-full md:h-[62vh]">
+                    <div className="relative w-full h-full rounded-xl md:h-[62vh]">
                         {imageSrc ? (
-                            <Image
-                                src={imageSrc}
-                                alt={imageAlt || "Section Image"}
-                                fill
-                                className={`object-cover ${orientation === 'left' ? 'object-right' : 'object-left'}`}
-                                unoptimized
-                            />
+                            <>
+                                {/* Mobile Image */}
+                                <div className="block md:hidden w-full h-full relative">
+                                    <Image
+                                        src={mobileImageSrc || imageSrc}
+                                        alt={imageAlt || "Section Image"}
+                                        fill
+                                        className="object-cover"
+                                        unoptimized
+                                    />
+                                </div>
+                                {/* Desktop Image */}
+                                <div className="hidden md:block w-full h-full relative">
+                                    <Image
+                                        src={imageSrc}
+                                        alt={imageAlt || "Section Image"}
+                                        fill
+                                        className={`object-cover min-[2000px]:object-contain ${orientation === 'left' ? 'object-right' : 'object-left'}`}
+                                        unoptimized
+                                    />
+                                </div>
+                            </>
                         ) : (
                             <div className="w-full h-full flex items-center justify-center bg-gray-300 dark:bg-gray-700 text-gray-500">
                                 <span>Image Placeholder</span>
@@ -67,11 +101,21 @@ const Section: React.FC<SectionProps> = ({ headline, subtext, imageSrc, imageAlt
             )}
 
             {/* Content Container - Centered and Aligned */}
-            <div className={`
+            <div ref={contentRef} className={`
                 relative z-10 container mx-auto px-4 h-full flex flex-col justify-center min-h-[50vh] md:min-h-screen
                 ${orientation === 'left' ? 'md:items-end' : 'md:items-start'}
             `}>
                 <div className="w-full md:w-1/2 flex flex-col gap-6 text-center md:text-left p-8 md:p-16">
+                    {tag && (
+                        <div className={`
+                            w-fit px-4 py-1 mb-2
+                            border border-[#9653ED] rounded-full
+                            text-[#9653ED] text-gray-300 text-[20px] font-medium uppercase tracking-wide
+                            ${orientation === 'left' ? 'mx-auto md:mx-0' : 'mx-auto md:mx-0'}
+                        `}>
+                            {tag}
+                        </div>
+                    )}
                     <h2 className="text-4xl md:text-5xl font-bold text-black dark:text-white font-heading">{headline}</h2>
                     <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 leading-relaxed">{subtext}</p>
                 </div>

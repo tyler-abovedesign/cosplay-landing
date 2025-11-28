@@ -43,13 +43,13 @@ const ScrollAnimationSection = () => {
             tl.fromTo(
                 videoContainerRef.current,
                 { clipPath: "inset(0% 0% 0% 0%)", x: "0%", y: "0%" },
-                { clipPath: "inset(5% 39.5% 5% 40%)", x: "25%", y: "0", duration: 1, ease: "power2.out" },
+                { clipPath: "inset(5% 39.5% 7% 40%)", x: "24.7%", y: "-9.1", duration: 1, ease: "power2.out" },
                 "<"
             );
 
             tl.fromTo(
                 sharedContainerRef.current,
-                { y: "30%" },
+                { y: "45%" },
                 { y: "0%", duration: 1, ease: "power2.out" },
                 "<"
             );
@@ -100,7 +100,7 @@ const ScrollAnimationSection = () => {
                     >
                         <div className="relative w-full h-full">
                             <Image
-                                src="/deviceScreen-1.png"
+                                src="/newpost-ipad.webp"
                                 alt="Device Frame"
                                 fill
                                 className="object-contain"
