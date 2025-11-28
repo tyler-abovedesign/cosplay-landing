@@ -3,6 +3,7 @@
 import Hero from "@/components/Hero";
 import Section from "@/components/Section";
 import ReelSection from "@/components/ReelSection";
+import Navbar from "@/components/Navbar";
 import ScrollAnimationSection from "@/components/ScrollAnimationSection";
 
 export default function Home() {
@@ -12,6 +13,7 @@ export default function Home() {
 
   return (
     <main className="relative min-h-screen flex flex-col items-center justify-between">
+      <Navbar />
       <ScrollAnimationSection />
 
       {/* Spacer to ensure scroll height for the absolute content */}
@@ -30,6 +32,7 @@ export default function Home() {
           <div className="h-[100vh] w-full" />
 
           <Section
+            id="monetize"
             headline="Fund your next build"
             tag="Monetization"
             subtext="We give you the tools to earn from your fans through subscriptions, tips, and pay-per-view content. Turn this expensive hobby into a thriving career."
@@ -38,32 +41,23 @@ export default function Home() {
           />
 
           <Section
-            headline="Powerful Performance"
-            tag="Speed"
-            subtext="Built on the latest technology stack, ensuring lightning-fast load times and smooth interactions across all devices."
+            id="discovery"
+            headline="Reach a new audience"
+            tag="Discovery"
+            subtext="Co-Splay is built for discovery. Our Explore feed helps your content get discovered by users natively on the platform."
             imageSrc="/ipad_intro.webp"
-            mobileImageSrc="/ipad_intro.webp" // Replace with mobile-specific image
-            imageAlt="Performance"
+            mobileImageSrc="/intro-ipad-mobile.webp" // Replace with mobile-specific image
+            imageAlt="Discovery"
             orientation="right"
           />
-          <ReelSection />
+          <ReelSection id="protection" />
 
           <Section
-            headline="Global Reach"
+            headline="Easily manage your own content"
             tag="Worldwide"
-            subtext="Connect with audiences worldwide. Our platform is optimized for global scale, ensuring your message is heard everywhere."
-            imageSrc="/explore.png"
-            mobileImageSrc="/explore.png" // Replace with mobile-specific image
-            imageAlt="Global Reach"
-            orientation="left"
-          />
-
-          <Section
-            headline="Global Reach"
-            tag="Worldwide"
-            subtext="Connect with audiences worldwide. Our platform is optimized for global scale, ensuring your message is heard everywhere."
-            imageSrc="/explore.png"
-            mobileImageSrc="/explore.png" // Replace with mobile-specific image
+            subtext="Manage your page, sales, messages, and storefront without juggling five different apps. Co-Splay's tools are designed specifically for cosplay creators, with human support when you need it and a community that already shares your niche."
+            imageSrc="/dashboard-ipad.webp"
+            mobileImageSrc="/dashboard-ipad.webp" // Replace with mobile-specific image
             imageAlt="Global Reach"
             orientation="left"
           />

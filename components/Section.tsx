@@ -9,6 +9,7 @@ gsap.registerPlugin(ScrollTrigger);
 interface SectionProps {
     headline: string;
     subtext: string;
+    id?: string;
     tag?: string;
     imageSrc?: string;
     mobileImageSrc?: string;
@@ -17,27 +18,44 @@ interface SectionProps {
     hideImage?: boolean;
 }
 
-const Section: React.FC<SectionProps> = ({ headline, subtext, tag, imageSrc, mobileImageSrc, imageAlt, orientation = 'left', hideImage = false }) => {
+const Section: React.FC<SectionProps> = ({ headline, subtext, id, tag, imageSrc, mobileImageSrc, imageAlt, orientation = 'left', hideImage = false }) => {
     const imageRef = useRef<HTMLDivElement>(null);
     const sectionRef = useRef<HTMLDivElement>(null);
     const contentRef = useRef<HTMLDivElement>(null);
 
     useGSAP(() => {
-        // Image Animation
+        // Image Animation - different for mobile vs desktop
         if (imageRef.current) {
-            const xOffset = orientation === 'left' ? -200 : 200;
+            const isMobile = window.matchMedia('(max-width: 768px)').matches;
 
-            gsap.from(imageRef.current, {
-                scrollTrigger: {
-                    trigger: imageRef.current,
-                    start: "top 80%",
-                    toggleActions: "play none none reverse",
-                },
-                opacity: 0,
-                x: xOffset,
-                duration: 1,
-                ease: "power1.out",
-            });
+            if (isMobile) {
+                // Mobile: simple fade-in
+                gsap.from(imageRef.current, {
+                    scrollTrigger: {
+                        trigger: imageRef.current,
+                        start: "top 80%",
+                        toggleActions: "play none none reverse",
+                    },
+                    opacity: 0,
+                    duration: 1,
+                    ease: "power1.out",
+                });
+            } else {
+                // Desktop: fade-in with slide
+                const xOffset = orientation === 'left' ? -200 : 200;
+
+                gsap.from(imageRef.current, {
+                    scrollTrigger: {
+                        trigger: imageRef.current,
+                        start: "top 80%",
+                        toggleActions: "play none none reverse",
+                    },
+                    opacity: 0,
+                    x: xOffset,
+                    duration: 1,
+                    ease: "power1.out",
+                });
+            }
         }
 
         // Fade out content as section scrolls out
@@ -56,13 +74,13 @@ const Section: React.FC<SectionProps> = ({ headline, subtext, tag, imageSrc, mob
     }, { scope: sectionRef });
 
     return (
-        <section ref={sectionRef} className="relative overflow-visible min-h-screen w-full flex flex-col md:block z-20 ">
+        <section id={id} ref={sectionRef} className="relative overflow-visible min-h-screen w-full flex flex-col md:block z-20 ">
             {/* Image Container - Absolute on Desktop, Stacked on Mobile */}
             {!hideImage && (
                 <div
                     ref={imageRef}
                     className={`
-                        flex items-center justify-center md:absolute md:top-0 md:bottom-0 md:h-full md:w-[50vw]
+                        flex items-center justify-center h-[50vh] md:h-auto md:absolute md:top-0 md:bottom-0 md:h-full md:w-[50vw]
                         ${orientation === 'left' ? 'md:right-1/2' : 'md:left-1/2'}
                         z-0
                     `}
@@ -76,7 +94,7 @@ const Section: React.FC<SectionProps> = ({ headline, subtext, tag, imageSrc, mob
                                         src={mobileImageSrc || imageSrc}
                                         alt={imageAlt || "Section Image"}
                                         fill
-                                        className="object-cover"
+                                        className="object-cover rounded-xl"
                                         unoptimized
                                     />
                                 </div>
@@ -86,7 +104,7 @@ const Section: React.FC<SectionProps> = ({ headline, subtext, tag, imageSrc, mob
                                         src={imageSrc}
                                         alt={imageAlt || "Section Image"}
                                         fill
-                                        className={`object-cover min-[2000px]:object-contain ${orientation === 'left' ? 'object-right' : 'object-left'}`}
+                                        className={`object-cover rounded-xl min-[2000px]:object-contain ${orientation === 'left' ? 'object-right' : 'object-left'}`}
                                         unoptimized
                                     />
                                 </div>
