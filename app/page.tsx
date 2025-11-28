@@ -58,7 +58,7 @@ export default function Home() {
             subtext="Manage your page, sales, messages, and storefront without juggling five different apps. Co-Splay's tools are designed specifically for cosplay creators, with human support when you need it and a community that already shares your niche."
             imageSrc="/dashboard-ipad.webp"
             mobileImageSrc="/dashboard-ipad.webp" // Replace with mobile-specific image
-            imageAlt="Global Reach"
+            imageAlt="Dashboard"
             orientation="left"
           />
 
